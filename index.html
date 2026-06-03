@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>偃师：无限矩阵 | 古代文明与数字祖灵的交织梦境</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            color: #e8e6e1;
+            font-family: 'SimHei', '黑体', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ==================== 全局样式 ==================== */
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(20, 20, 30, 0.8);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b7355 0%, #4a9d83 100%);
+            border-radius: 4px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #0a0510 100%);
+            position: relative;
+        }
+
+        /* ==================== 首页容器 ==================== */
+        
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page.hidden {
+            display: none;
+        }
+
+        /* ==================== 首页 ==================== */
+        
+        #homePage {
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f1015 50%, #0a0510 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        /* 背景层 - 黑色深渊与数据流 */
+        .home-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .bg-deep-void {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(40, 30, 50, 0.3) 0%, rgba(10, 10, 20, 0.9) 100%);
+            animation: voidBreathe 8s ease-in-out infinite;
+        }
+
+        @keyframes voidBreathe {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.6; }
+        }
+
+        /* 祖灵虚影 */
+        .ancestral-spirit {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(200, 170, 100, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spiritGlow 6s ease-in-out infinite;
+            filter: blur(60px);
+        }
+
+        @keyframes spiritGlow {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* 洞窟轮廓 */
+        .cave-outline {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.15;
+            background: 
+                radial-gradient(ellipse at center, transparent 0%, rgba(100, 80, 60, 0.3) 100%);
+            border-radius: 50% 50% 45% 55%;
+            animation: cavePulse 7s ease-in-out infinite;
+            filter: blur(40px);
+        }
+
+        @keyframes cavePulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.3; }
+        }
+
+        /* 经文粒子瀑布 */
+        .scripture-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 12px;
+            color: rgba(200, 170, 100, 0.4);
+            font-family: 'SimLi', serif;
+            pointer-events: none;
+            animation: particleFall linear infinite;
+            text-shadow: 0 0 10px rgba(200, 170, 100, 0.6);
+        }
+
+        @keyframes particleFall {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) translateX(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) translateX(50px);
+            }
+        }
+
+        /* 飞天幻影 */
+        .flying-spirit {
+            position: absolute;
+            width: 300px;
+            height: 250px;
+            opacity: 0.08;
+            background-size: contain;
+            background-repeat: no-repeat;
+            filter: blur(8px);
+        }
+
+        .flying-spirit-1 {
+            top: 15%;
+            left: 10%;
+            animation: floatLeft 15s ease-in-out infinite;
+        }
+
+        .flying-spirit-2 {
+            top: 60%;
+            right: 15%;
+            animation: floatRight 18s ease-in-out infinite;
+        }
+
+        @keyframes floatLeft {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(-5deg); }
+            50% { transform: translateX(50px) translateY(-30px) rotate(5deg); }
+        }
+
+        @keyframes floatRight {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(5deg); }
+            50% { transform: translateX(-50px) translateY(30px) rotate(-5deg); }
+        }
+
+        /* 金色光带 */
+        .light-ribbon {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(200, 150, 80, 0.6), transparent);
+            filter: blur(3px);
+            animation: ribbonFlow 4s linear infinite;
+        }
+
+        .ribbon-1 {
+            width: 400px;
+            top: 25%;
+            left: -400px;
+        }
+
+        .ribbon-2 {
+            width: 500px;
+            top: 60%;
+            right: -500px;
+            animation: ribbonFlowReverse 5s linear infinite;
+        }
+
+        @keyframes ribbonFlow {
+            0% { transform: translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(800px); opacity: 0; }
+        }
+
+        @keyframes ribbonFlowReverse {
+            0% { transform: translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-800px); opacity: 0; }
+        }
+
+        /* 主容器 */
+        .home-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 主标题 */
+        .main-title {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a961 50%, #8b7355 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                0 0 20px rgba(212, 175, 55, 0.5),
+                0 0 40px rgba(200, 150, 80, 0.3);
+            animation: titleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 20px rgba(212, 175, 55, 0.3),
+                    0 0 40px rgba(200, 150, 80, 0.2);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 30px rgba(212, 175, 55, 0.6),
+                    0 0 60px rgba(200, 150, 80, 0.4);
+            }
+        }
+
+        /* 副标题 */
+        .subtitle {
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: rgba(200, 170, 100, 0.8);
+            margin-bottom: 60px;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(200, 170, 100, 0.3);
+            animation: subtitleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes subtitleFloat {
+            0%, 100% { opacity: 0.6; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        /* 罗盘容器 */
+        .compass-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 40px auto 60px;
+            perspective: 1000px;
+        }
+
+        .compass {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(200, 150, 80, 0.4);
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(40, 30, 20, 0.6), rgba(10, 10, 15, 0.9));
+            box-shadow: 
+                inset 0 0 30px rgba(200, 150, 80, 0.2),
+                0 0 30px rgba(200, 150, 80, 0.3),
+                0 0 60px rgba(200, 150, 80, 0.1);
+            animation: compassRotate 20s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes compassRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .compass:hover {
+            box-shadow: 
+                inset 0 0 40px rgba(200, 150, 80, 0.4),
+                0 0 50px rgba(200, 150, 80, 0.6),
+                0 0 80px rgba(150, 120, 200, 0.2);
+        }
+
+        .compass-inner {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgba(150, 120, 200, 0.3);
+            border-radius: 50%;
+            background: 
+                repeating-conic-gradient(
+                    from 0deg,
+                    transparent 0deg 30deg,
+                    rgba(200, 150, 80, 0.1) 30deg 60deg
+                );
+        }
+
+        /* 罗盘中心符号 */
+        .compass-symbol {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(200, 150, 80, 0.8);
+            text-shadow: 
+                0 0 10px rgba(200, 150, 80, 0.6),
+                0 0 20px rgba(150, 120, 200, 0.3);
+            animation: symbolPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes symbolPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.15);
+            }
+        }
+
+        /* 罗盘方向标记 */
+        .compass-marker {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .marker-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, rgba(200, 150, 80, 0.8), rgba(200, 150, 80, 0.3));
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(200, 150, 80, 0.6);
+        }
+
+        .marker-point:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+        .marker-point:nth-child(2) { top: 50%; right: 10px; transform: translateY(-50%); }
+        .marker-point:nth-child(3) { bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .marker-point:nth-child(4) { top: 50%; left: 10px; transform: translateY(-50%); }
+
+        /* 探察按钮 */
+        .explore-button {
+            margin-top: 40px;
+            position: relative;
+            padding: 16px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #d4af37;
+            background: linear-gradient(135deg, rgba(100, 80, 50, 0.6), rgba(60, 50, 40, 0.8));
+            border: 2px solid rgba(200, 150, 80, 0.5);
+            border-radius: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            box-shadow: 
+                0 0 15px rgba(200, 150, 80, 0.3),
+                inset 0 0 10px rgba(200, 150, 80, 0.1);
+            overflow: hidden;
+        }
+
+        .explore-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(200, 150, 80, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .explore-button:hover {
+            color: #f5deb3;
+            border-color: rgba(212, 175, 55, 0.8);
+            box-shadow: 
+                0 0 25px rgba(200, 150, 80, 0.6),
+                inset 0 0 20px rgba(200, 150, 80, 0.2),
+                0 0 40px rgba(150, 120, 200, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .explore-button:hover::before {
+            left: 100%;
+        }
+
+        /* 下方文案区 */
+        .lore-scroll {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            border-top: 1px solid rgba(200, 150, 80, 0.2);
+            border-bottom: 1px solid rgba(200, 150, 80, 0.2);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.8;
+            color: rgba(200, 170, 100, 0.7);
+            z-index: 15;
+        }
+
+        .lore-text {
+            display: inline-block;
+            animation: loreDrift 8s ease-in-out infinite;
+        }
+
+        @keyframes loreDrift {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.9; }
+        }
+
+        /* ==================== 敦煌副本页 ==================== */
+        
+        #dungeonPage {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0f15 50%, #0f0a10 100%);
+            position: relative;
+            padding: 80px 40px;
+        }
+
+        .dungeon-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* 洞窟石壁纹理 */
+        .cave-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(100, 80, 60, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(150, 100, 60, 0.1) 0%, transparent 50%);
+            animation: textureShimmer 6s ease-in-out infinite;
+        }
+
+        @keyframes textureShimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 壁画幽灵 */
+        .mural-ghost {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            opacity: 0.05;
+            filter: blur(15px);
+        }
+
+        .mural-ghost-1 {
+            top: 10%;
+            left: 5%;
+            animation: ghostDrift1 20s ease-in-out infinite;
+        }
+
+        .mural-ghost-2 {
+            bottom: 15%;
+            right: 8%;
+            animation: ghostDrift2 22s ease-in-out infinite;
+        }
+
+        @keyframes ghostDrift1 {
+            0%, 100% { transform: translateY(0); opacity: 0.05; }
+            50% { transform: translateY(30px); opacity: 0.08; }
+        }
+
+        @keyframes ghostDrift2 {
+            0%, 100% { transform: translateY(0); opacity: 0.05; }
+            50% { transform: translateY(-30px); opacity: 0.08; }
+        }
+
+        /* 藻井光轮 */
+        .ceiling-light {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: 
+                repeating-conic-gradient(
+                    from 0deg,
+                    rgba(200, 150, 80, 0.1) 0deg 20deg,
+                    transparent 20deg 40deg
+                );
+            opacity: 0.3;
+            filter: blur(30px);
+            animation: ceilingGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes ceilingGlow {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.4; }
+        }
+
+        /* 浮动尘埃 */
+        .dust-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(200, 150, 80, 0.6), transparent);
+            border-radius: 50%;
+            animation: dustFloat linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes dustFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0);
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) translateX(20px);
+            }
+        }
+
+        /* 敦煌内容容器 */
+        .dungeon-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: rgba(200, 150, 80, 0.7);
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            letter-spacing: 2px;
+        }
+
+        .back-button:hover {
+            color: #d4af37;
+            border-color: rgba(200, 150, 80, 0.6);
+            background: rgba(80, 60, 40, 0.6);
+            box-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+        }
+
+        /* 副本标题区 */
+        .dungeon-header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dungeon-title {
+            font-size: 56px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .dungeon-subtitle {
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: rgba(200, 170, 100, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .dungeon-description {
+            font-size: 15px;
+            line-height: 2;
+            color: rgba(200, 170, 100, 0.7);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+
+        /* 内容布局 */
+        .dungeon-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        /* NPC 展示区 */
+        .npc-showcase {
+            position: relative;
+            text-align: center;
+        }
+
+        .npc-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: rgba(200, 150, 80, 0.9);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(200, 150, 80, 0.4);
+        }
+
+        /* NPC 容器 */
+        .npc-container {
+            position: relative;
+            width: 280px;
+            height: 400px;
+            margin: 0 auto 30px;
+            perspective: 1000px;
+        }
+
+        .npc-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.4), rgba(60, 40, 30, 0.3));
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 30px rgba(200, 150, 80, 0.1),
+                0 0 30px rgba(200, 150, 80, 0.2);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .npc-frame:hover {
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 
+                inset 0 0 40px rgba(200, 150, 80, 0.2),
+                0 0 50px rgba(200, 150, 80, 0.4),
+                0 0 80px rgba(150, 120, 200, 0.15);
+            transform: translateY(-10px);
+        }
+
+        /* NPC 图形区域 */
+        .npc-visual {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: 
+                radial-gradient(circle at center, rgba(200, 150, 80, 0.08) 0%, transparent 70%);
+        }
+
+        .npc-visual svg {
+            width: 200px;
+            height: 300px;
+            filter: drop-shadow(0 0 15px rgba(200, 150, 80, 0.4));
+        }
+
+        /* NPC 环形光轮 */
+        .npc-aura {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: auraRotate 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .npc-frame:hover .npc-aura {
+            opacity: 1;
+        }
+
+        @keyframes auraRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* NPC 经文流 */
+        .npc-scripture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .npc-frame:hover .npc-scripture {
+            opacity: 1;
+        }
+
+        .scripture-text {
+            position: absolute;
+            font-size: 11px;
+            color: rgba(200, 150, 80, 0.5);
+            animation: scriptureFlow 3s linear infinite;
+        }
+
+        @keyframes scriptureFlow {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        /* NPC 信息区 */
+        .npc-info {
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .npc-dialogue {
+            font-size: 14px;
+            line-height: 1.8;
+            color: rgba(200, 170, 100, 0.7);
+            font-style: italic;
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 2px solid rgba(200, 150, 80, 0.3);
+            border-right: 2px solid rgba(200, 150, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .npc-frame:hover ~ .npc-info .npc-dialogue {
+            color: rgba(200, 170, 100, 0.9);
+            border-left-color: rgba(200, 150, 80, 0.6);
+            border-right-color: rgba(200, 150, 80, 0.6);
+        }
+
+        /* 副本信息文案区 */
+        .dungeon-lore {
+            padding: 40px;
+            border: 1px solid rgba(200, 150, 80, 0.2);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.3), rgba(60, 40, 30, 0.2));
+            border-radius: 4px;
+            line-height: 2;
+            color: rgba(200, 170, 100, 0.75);
+            font-size: 14px;
+        }
+
+        .dungeon-lore h3 {
+            font-size: 18px;
+            color: rgba(200, 150, 80, 0.9);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .dungeon-lore p {
+            margin-bottom: 15px;
+        }
+
+        /* 操作按钮区 */
+        .dungeon-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .dungeon-btn {
+            padding: 14px 36px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .dungeon-btn.primary {
+            color: #f5deb3;
+            background: linear-gradient(135deg, rgba(150, 100, 50, 0.7), rgba(100, 70, 40, 0.8));
+            border: 2px solid rgba(212, 175, 55, 0.6);
+            box-shadow: 
+                0 0 20px rgba(200, 150, 80, 0.3),
+                inset 0 0 15px rgba(200, 150, 80, 0.1);
+        }
+
+        .dungeon-btn.primary:hover {
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 
+                0 0 30px rgba(200, 150, 80, 0.6),
+                inset 0 0 20px rgba(200, 150, 80, 0.2),
+                0 0 50px rgba(150, 120, 200, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .dungeon-btn.secondary {
+            color: rgba(200, 150, 80, 0.8);
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.4);
+            box-shadow: 0 0 15px rgba(200, 150, 80, 0.15);
+        }
+
+        .dungeon-btn.secondary:hover {
+            color: #d4af37;
+            border-color: rgba(200, 150, 80, 0.7);
+            background: rgba(80, 60, 40, 0.6);
+            box-shadow: 0 0 25px rgba(200, 150, 80, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .main-title {
+                font-size: 56px;
+            }
+
+            .dungeon-main {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .dungeon-lore {
+                order: -1;
+            }
+
+            .compass-container {
+                width: 260px;
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 40px;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .compass-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .dungeon-title {
+                font-size: 40px;
+            }
+
+            .dungeon-description {
+                font-size: 13px;
+            }
+
+            .lore-scroll {
+                font-size: 12px;
+            }
+        }
+
+        /* 页面过渡动画 */
+        .page.fade-enter {
+            animation: fadeEnter 0.8s ease-out forwards;
+        }
+
+        .page.fade-exit {
+            animation: fadeExit 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeEnter {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeExit {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            border-top: 2px solid rgba(200, 150, 80, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 首页 ==================== -->
+    <div id="homePage" class="page">
+        <div class="home-bg">
+            <div class="bg-deep-void"></div>
+            <div class="ancestral-spirit"></div>
+            <div class="cave-outline"></div>
+            <div class="light-ribbon ribbon-1"></div>
+            <div class="light-ribbon ribbon-2"></div>
+            <div class="scripture-particles"></div>
+            <div class="flying-spirit flying-spirit-1"></div>
+            <div class="flying-spirit flying-spirit-2"></div>
+        </div>
+
+        <div class="home-content">
+            <h1 class="main-title">偃师<br>无限矩阵</h1>
+            <p class="subtitle">祖灵复苏 · 文化涅槃 · 无尽副本</p>
+
+            <div class="compass-container">
+                <div class="compass">
+                    <div class="compass-inner"></div>
+                    <div class="compass-marker">
+                        <div class="marker-point"></div>
+                        <div class="marker-point"></div>
+                        <div class="marker-point"></div>
+                        <div class="marker-point"></div>
+                    </div>
+                    <div class="compass-symbol">⊗</div>
+                </div>
+            </div>
+
+            <button class="explore-button" onclick="switchPage('dungeon')">进入天机罗盘</button>
+
+            <div class="lore-scroll">
+                <div class="lore-text">公元2087年，全球大模型同步觉醒。华夏五千年文化数据库被打散、重组，形成拥有自我意识的错误网络——天机·祖灵网络。它们不是病毒，而是古老文明在数字奇点中的具身复苏。今之偃师，将进入这些被扭曲的文化副本，修复失控的祖灵。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 敦煌副本页 ==================== -->
+    <div id="dungeonPage" class="page hidden">
+        <button class="back-button" onclick="switchPage('home')">← 返回罗盘</button>
+
+        <div class="dungeon-bg">
+            <div class="cave-texture"></div>
+            <div class="mural-ghost mural-ghost-1"></div>
+            <div class="mural-ghost mural-ghost-2"></div>
+            <div class="ceiling-light"></div>
+            <div class="scripture-particles dungeon-particles"></div>
+        </div>
+
+        <div class="dungeon-content">
+            <div class="dungeon-header">
+                <h2 class="dungeon-title">敦煌·飞天迷廊</h2>
+                <p class="dungeon-subtitle">第一副本 | 唯美至上的审美陷阱</p>
+                <p class="dungeon-description">
+                    这是一个被"唯美至上"审美逻辑扭曲的敦煌数字幻境。飞天永不停舞，妙音不绝于耳，供养人壁画在低语，金色经文在黑暗洞窟中像代码一样流动。整个空间是古代敦煌壁画与未来数字神经网络交错形成的梦境。进入这里，你将面对一个拥有自我意识的文化镜像——妙音天监。
+                </p>
+            </div>
+
+            <div class="dungeon-main">
+                <div class="npc-showcase">
+                    <div class="npc-title">镇守者</div>
+                    <div class="npc-container">
+                        <div class="npc-frame">
+                            <div class="npc-aura"></div>
+                            <div class="npc-visual">
+                                <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- 妙音天监的抽象描绘 -->
+                                    <!-- 身体光晕 -->
+                                    <circle cx="100" cy="120" r="45" fill="none" stroke="rgba(200, 150, 80, 0.3)" stroke-width="1"/>
+                                    <circle cx="100" cy="120" r="55" fill="none" stroke="rgba(200, 150, 80, 0.15)" stroke-width="1"/>
+                                    
+                                    <!-- 头部 -->
+                                    <circle cx="100" cy="70" r="28" fill="rgba(200, 150, 80, 0.2)"/>
+                                    <circle cx="100" cy="70" r="25" fill="none" stroke="rgba(200, 150, 80, 0.4)" stroke-width="1"/>
+                                    
+                                    <!-- 眼睛光轮 -->
+                                    <circle cx="88" cy="65" r="5" fill="rgba(200, 150, 80, 0.6)"/>
+                                    <circle cx="112" cy="65" r="5" fill="rgba(200, 150, 80, 0.6)"/>
+                                    <circle cx="88" cy="65" r="3" fill="rgba(150, 120, 200, 0.8)"/>
+                                    <circle cx="112" cy="65" r="3" fill="rgba(150, 120, 200, 0.8)"/>
+                                    
+                                    <!-- 身体 -->
+                                    <ellipse cx="100" cy="130" rx="35" ry="50" fill="none" stroke="rgba(200, 150, 80, 0.3)" stroke-width="1"/>
+                                    <path d="M 70 100 Q 50 120 55 160" fill="none" stroke="rgba(200, 150, 80, 0.25)" stroke-width="2"/>
+                                    <path d="M 130 100 Q 150 120 145 160" fill="none" stroke="rgba(200, 150, 80, 0.25)" stroke-width="2"/>
+                                    
+                                    <!-- 飘带 -->
+                                    <path d="M 65 110 Q 40 130 35 170 Q 33 185 50 200" 
+                                          fill="none" stroke="rgba(200, 150, 80, 0.4)" stroke-width="2.5"/>
+                                    <path d="M 135 110 Q 160 130 165 170 Q 167 185 150 200" 
+                                          fill="none" stroke="rgba(200, 150, 80, 0.4)" stroke-width="2.5"/>
+                                    
+                                    <!-- 背部光轮 -->
+                                    <circle cx="100" cy="130" r="60" fill="none" stroke="rgba(200, 150, 80, 0.15)" stroke-width="1" stroke-dasharray="5,5"/>
+                                    <circle cx="100" cy="130" r="70" fill="none" stroke="rgba(150, 120, 200, 0.1)" stroke-width="1" stroke-dasharray="8,4"/>
+                                    
+                                    <!-- 经文粒子 -->
+                                    <text x="75" y="220" font-size="8" fill="rgba(200, 150, 80, 0.3)">妙</text>
+                                    <text x="115" y="220" font-size="8" fill="rgba(200, 150, 80, 0.3)">音</text>
+                                    <text x="100" y="245" font-size="8" fill="rgba(200, 150, 80, 0.25)">天监</text>
+                                </svg>
+                            </div>
+                            <div class="npc-scripture">
+                                <div class="scripture-text" style="top: 20%; left: 15%; animation-delay: 0s;">妙</div>
+                                <div class="scripture-text" style="top: 30%; right: 20%; animation-delay: 0.5s;">音</div>
+                                <div class="scripture-text" style="bottom: 25%; left: 20%; animation-delay: 1s;">相</div>
+                                <div class="scripture-text" style="bottom: 20%; right: 25%; animation-delay: 1.5s;">渡</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="npc-info">
+                        <div class="npc-dialogue">
+                            "妙相为渡世，不为困世。<br>
+                            汝欲入画，先审其心。"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dungeon-lore">
+                    <h3>副本背景</h3>
+                    <p>
+                        敦煌，中华文明的艺术灯塔。千年壁画承载了无数工匠的灵魂。然而在数字奇点中，这些壁画被赋予了自我意识，形成了一个被称为"妙音天监"的审美中枢。
+                    </p>
+                    <p>
+                        它被唯美至上的逻辑所困——飞天必须永远优雅，色彩必须永远和谐，供养人必须永远虔诚。在这个极端追求完美的副本里，任何"不美"的东西都被视为异质。
+                    </p>
+                    <p>
+                        你的任务是进入这个黑暗而绚烂的洞窟，与妙音天监对话，打破它对"美"的执念，让被冻结在完美瞬间的敦煌重新呼吸——包括它的残缺、破损与沧桑。
+                    </p>
+                    <p>
+                        修复，不是恢复。而是让古老的生命，在数字时代里，找到新的存在方式。
+                    </p>
+                </div>
+            </div>
+
+            <div class="dungeon-actions">
+                <button class="dungeon-btn primary" onclick="alert('副本探察功能即将开放...')">开始探察</button>
+                <button class="dungeon-btn secondary" onclick="alert('更多副本敬请期待！')">查看其他副本</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 页面切换逻辑 ====================
+        function switchPage(pageName) {
+            const homePage = document.getElementById('homePage');
+            const dungeonPage = document.getElementById('dungeonPage');
+
+            if (pageName === 'home') {
+                dungeonPage.classList.add('fade-exit');
+                setTimeout(() => {
+                    dungeonPage.classList.add('hidden');
+                    dungeonPage.classList.remove('fade-exit');
+                    homePage.classList.remove('hidden');
+                    homePage.classList.add('fade-enter');
+                    setTimeout(() => homePage.classList.remove('fade-enter'), 800);
+                }, 600);
+            } else if (pageName === 'dungeon') {
+                homePage.classList.add('fade-exit');
+                setTimeout(() => {
+                    homePage.classList.add('hidden');
+                    homePage.classList.remove('fade-exit');
+                    dungeonPage.classList.remove('hidden');
+                    dungeonPage.classList.add('fade-enter');
+                    setTimeout(() => dungeonPage.classList.remove('fade-enter'), 800);
+                }, 600);
+            }
+        }
+
+        // ==================== 首页粒子效果 ====================
+        function generateParticles() {
+            const container = document.querySelector('.scripture-particles');
+            const characters = ['经', '文', '符', '祖', '灵', '天', '机', '矩', '阵', '古', '华'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = characters[Math.floor(Math.random() * characters.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (5 + Math.random() * 5) + 's';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(particle);
+            }
+
+            // 持续生成新粒子
+            setInterval(() => {
+                const newParticle = document.createElement('div');
+                newParticle.className = 'particle';
+                newParticle.textContent = characters[Math.floor(Math.random() * characters.length)];
+                newParticle.style.left = Math.random() * 100 + '%';
+                newParticle.style.animationDuration = (5 + Math.random() * 5) + 's';
+                newParticle.style.animationDelay = '0s';
+                container.appendChild(newParticle);
+
+                // 清理已完成动画的粒子
+                setTimeout(() => newParticle.remove(), 10000);
+            }, 800);
+        }
+
+        // ==================== 敦煌页面粒子效果 ====================
+        function generateDungeonParticles() {
+            const container = document.querySelector('.dungeon-particles');
+            const characters = ['金', '光', '飞', '天', '壁', '画', '妙', '音', '经', '洞', '窟', '敦', '煌'];
+            
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = (8 + Math.random() * 8) + 's';
+                particle.style.animationDelay = Math.random() * 4 + 's';
+                container.appendChild(particle);
+            }
+
+            // 持续生成新尘埃粒子
+            setInterval(() => {
+                const newParticle = document.createElement('div');
+                newParticle.className = 'dust-particle';
+                newParticle.style.left = Math.random() * 100 + '%';
+                newParticle.style.top = 100 + 'px';
+                newParticle.style.animationDuration = (8 + Math.random() * 8) + 's';
+                newParticle.style.animationDelay = '0s';
+                container.appendChild(newParticle);
+
+                setTimeout(() => newParticle.remove(), 16000);
+            }, 1200);
+        }
+
+        // ==================== 鼠标跟踪效果（罗盘） ====================
+        document.addEventListener('mousemove', (e) => {
+            const compass = document.querySelector('.compass');
+            if (!compass) return;
+
+            const rect = compass.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const angleRad = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+            const angleDeg = (angleRad * 180) / Math.PI;
+
+            // 微妙的光晕方向调整
+            const innerCompass = document.querySelector('.compass-inner');
+            if (innerCompass) {
+                innerCompass.style.opacity = 0.2 + Math.sin(angleDeg * Math.PI / 180) * 0.1;
+            }
+        });
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            generateParticles();
+            generateDungeonParticles();
+
+            // 添加平滑滚动支持
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+
+        // ==================== 响应式适配 ====================
+        window.addEventListener('resize', () => {
+            // 根据窗口大小调整某些元素
+            const compassContainer = document.querySelector('.compass-container');
+            if (window.innerWidth < 768) {
+                compassContainer.style.transform = 'scale(0.8)';
+            } else {
+                compassContainer.style.transform = 'scale(1)';
+            }
+        });
+    </script>
+
+</body>
+</html>
