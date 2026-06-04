@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>偃师：无限矩阵 | 文化修复游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #d4af37;
+            --dark-bg: #0a0a0f;
+            --cave-dark: #1a0f15;
+            --cave-secondary: #0f0a10;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #9d4edd;
+            --accent-red: #d62828;
+            --text-light: #e8e6e1;
+            --text-muted: #c8aa64;
+            --success-green: #4a9d83;
+            --warning-orange: #d4811d;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'SimHei', '黑体', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ==================== 全局UI ==================== */
+        
+        .screen {
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+            overflow-y: auto;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--cave-dark) 50%, var(--cave-secondary) 100%);
+            z-index: 100;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== 大地图 ==================== */
+        
+        #mapScreen {
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f1015 50%, #0a0510 100%);
+            position: relative;
+            padding: 40px;
+        }
+
+        .map-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .map-void {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(40, 30, 50, 0.3) 0%, rgba(10, 10, 20, 0.9) 100%);
+            animation: voidBreathe 8s ease-in-out infinite;
+        }
+
+        @keyframes voidBreathe {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.6; }
+        }
+
+        .map-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .map-title {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a961 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dungeon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dungeon-card {
+            padding: 24px;
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.4), rgba(60, 40, 30, 0.3));
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dungeon-card:hover {
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 
+                inset 0 0 40px rgba(200, 150, 80, 0.2),
+                0 0 50px rgba(200, 150, 80, 0.4),
+                0 0 80px rgba(150, 120, 200, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .dungeon-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .dungeon-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .dungeon-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary-gold);
+        }
+
+        .dungeon-card p {
+            font-size: 12px;
+            color: rgba(200, 170, 100, 0.6);
+            margin-bottom: 10px;
+        }
+
+        .dungeon-difficulty {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .difficulty-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            color: rgba(200, 150, 80, 0.7);
+            border-radius: 2px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .difficulty-btn:hover:not(.locked) {
+            color: var(--primary-gold);
+            border-color: rgba(200, 150, 80, 0.6);
+            background: rgba(80, 60, 40, 0.6);
+        }
+
+        .difficulty-btn.locked {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .status-bar {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(40, 40, 50, 0.8);
+            padding: 15px 20px;
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 4px;
+            font-size: 13px;
+            z-index: 20;
+        }
+
+        .status-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-label {
+            color: rgba(200, 150, 80, 0.7);
+            min-width: 80px;
+        }
+
+        .status-value {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* ==================== 副本游戏界面 ==================== */
+        
+        #gameScreen {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            z-index: 20;
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--primary-gold);
+        }
+
+        .game-exit-btn {
+            padding: 8px 16px;
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            color: rgba(200, 150, 80, 0.7);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-exit-btn:hover {
+            color: var(--primary-gold);
+            border-color: rgba(200, 150, 80, 0.6);
+            background: rgba(80, 60, 40, 0.6);
+        }
+
+        /* 游戏主容器 */
+        .game-container {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            overflow: auto;
+        }
+
+        /* 左侧场景与事件 */
+        .game-main {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .scene-display {
+            flex: 1;
+            border: 1px solid rgba(200, 150, 80, 0.2);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.3), rgba(60, 40, 30, 0.2));
+            border-radius: 4px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        .scene-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .scene-content {
+            position: relative;
+            z-index: 5;
+        }
+
+        .scene-stage {
+            font-size: 14px;
+            color: rgba(200, 150, 80, 0.5);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .scene-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+        }
+
+        .scene-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(200, 170, 100, 0.8);
+            margin-bottom: 25px;
+            max-width: 600px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(100, 80, 50, 0.6), rgba(60, 50, 40, 0.8));
+            border: 1px solid rgba(200, 150, 80, 0.4);
+            color: rgba(200, 150, 80, 0.8);
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-gold);
+            border-color: rgba(200, 150, 80, 0.7);
+            background: rgba(80, 60, 40, 0.6);
+            box-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+        }
+
+        /* 右侧信息面板 */
+        .game-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 280px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .panel {
+            border: 1px solid rgba(200, 150, 80, 0.2);
+            background: rgba(40, 40, 50, 0.6);
+            border-radius: 4px;
+            padding: 16px;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: rgba(200, 150, 80, 0.7);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .stat-bar {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            color: rgba(200, 170, 100, 0.8);
+        }
+
+        .stat-fill {
+            height: 6px;
+            background: rgba(100, 100, 120, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 150, 80, 0.2);
+        }
+
+        .stat-value {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gold), var(--accent-purple));
+            transition: width 0.3s ease;
+        }
+
+        .stat-value.warning {
+            background: linear-gradient(90deg, var(--warning-orange), var(--accent-red));
+        }
+
+        .stat-value.success {
+            background: linear-gradient(90deg, var(--success-green), var(--primary-gold));
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .card-item {
+            padding: 10px;
+            background: rgba(60, 50, 40, 0.4);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-item:hover {
+            background: rgba(80, 60, 40, 0.5);
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 0 0 10px rgba(200, 150, 80, 0.2);
+        }
+
+        .card-name {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .card-count {
+            color: rgba(200, 150, 80, 0.6);
+            font-size: 11px;
+        }
+
+        /* ==================== 阶段1 - 探察 ==================== */
+        
+        #exploreStage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .explore-title {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: var(--primary-gold);
+        }
+
+        .hotspot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .hotspot {
+            aspect-ratio: 1;
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            background: radial-gradient(circle at center, rgba(200, 150, 80, 0.1), rgba(40, 30, 20, 0.5));
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hotspot::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(200, 150, 80, 0.5);
+            border-radius: 4px;
+            animation: hotspotPulse 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes hotspotPulse {
+            0%, 100% { box-shadow: inset 0 0 0px rgba(200, 150, 80, 0.3); }
+            50% { box-shadow: inset 0 0 15px rgba(200, 150, 80, 0.4); }
+        }
+
+        .hotspot:hover {
+            border-color: rgba(200, 150, 80, 0.7);
+            background: radial-gradient(circle at center, rgba(200, 150, 80, 0.2), rgba(60, 40, 30, 0.6));
+            box-shadow: 0 0 20px rgba(200, 150, 80, 0.3);
+            transform: scale(1.05);
+        }
+
+        .hotspot.selected {
+            border-color: var(--primary-gold);
+            background: radial-gradient(circle at center, rgba(200, 150, 80, 0.25), rgba(80, 60, 40, 0.7));
+            box-shadow: 0 0 25px rgba(200, 150, 80, 0.5);
+        }
+
+        .hotspot.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .hotspot-content {
+            position: relative;
+            z-index: 2;
+            color: rgba(200, 170, 100, 0.7);
+        }
+
+        .hotspot-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .hotspot-name {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .explore-counter {
+            font-size: 13px;
+            color: rgba(200, 150, 80, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .counter-active {
+            color: var(--primary-gold);
+        }
+
+        /* ==================== 阶段2 - 铸卡 ==================== */
+        
+        #craftStage {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .craft-left {
+            flex: 1;
+        }
+
+        .craft-right {
+            flex: 1;
+        }
+
+        .fragment-section {
+            margin-bottom: 25px;
+        }
+
+        .fragment-title {
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: rgba(200, 150, 80, 0.7);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .fragment-pool {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .fragment {
+            padding: 10px;
+            background: rgba(60, 50, 40, 0.4);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            font-size: 11px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            color: rgba(200, 170, 100, 0.7);
+        }
+
+        .fragment:hover {
+            background: rgba(80, 60, 40, 0.5);
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 0 0 10px rgba(200, 150, 80, 0.2);
+            cursor: grab;
+        }
+
+        .fragment.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .craft-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .craft-slot {
+            border: 2px dashed rgba(200, 150, 80, 0.3);
+            background: rgba(40, 30, 20, 0.3);
+            border-radius: 4px;
+            padding: 15px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: rgba(200, 150, 80, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .craft-slot.filled {
+            border-color: rgba(200, 150, 80, 0.6);
+            background: rgba(60, 50, 40, 0.5);
+            color: rgba(200, 170, 100, 0.8);
+        }
+
+        .craft-slot:hover {
+            border-color: rgba(200, 150, 80, 0.5);
+        }
+
+        .card-recipe {
+            padding: 12px;
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .card-recipe:hover {
+            background: rgba(80, 60, 40, 0.6);
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 0 0 10px rgba(200, 150, 80, 0.2);
+        }
+
+        .recipe-name {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .recipe-effect {
+            font-size: 11px;
+            color: rgba(200, 170, 100, 0.6);
+            line-height: 1.4;
+        }
+
+        /* ==================== 阶段3 - 行动 ==================== */
+        
+        #actionStage {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .turn-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: rgba(200, 150, 80, 0.7);
+        }
+
+        .turn-indicator {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .event-display {
+            flex: 1;
+            border: 1px solid rgba(200, 150, 80, 0.2);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.3), rgba(60, 40, 30, 0.2));
+            border-radius: 4px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 300px;
+        }
+
+        .event-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+
+        .event-description {
+            font-size: 14px;
+            line-height: 1.8;
+            color: rgba(200, 170, 100, 0.8);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .event-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .choice-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(100, 80, 50, 0.5), rgba(60, 50, 40, 0.6));
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            color: rgba(200, 170, 100, 0.8);
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: rgba(80, 60, 40, 0.7);
+            border-color: rgba(200, 150, 80, 0.6);
+            color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+            transform: translateX(5px);
+        }
+
+        .choice-effect {
+            font-size: 11px;
+            color: rgba(200, 150, 80, 0.6);
+            margin-top: 4px;
+        }
+
+        /* ==================== 阶段4 - 审判 ==================== */
+        
+        #judgmentStage {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            align-items: stretch;
+        }
+
+        .boss-display {
+            flex: 1;
+            border: 1px solid rgba(200, 150, 80, 0.2);
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.3), rgba(60, 40, 30, 0.2));
+            border-radius: 4px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .boss-avatar {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            border-radius: 4px;
+            background: radial-gradient(circle at center, rgba(200, 150, 80, 0.1), rgba(40, 30, 20, 0.5));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boss-avatar::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(200, 150, 80, 0.5);
+            border-radius: 4px;
+            animation: bossPulse 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bossPulse {
+            0%, 100% { box-shadow: inset 0 0 0px rgba(200, 150, 80, 0.3), 0 0 0px rgba(200, 150, 80, 0.3); }
+            50% { box-shadow: inset 0 0 20px rgba(200, 150, 80, 0.4), 0 0 30px rgba(200, 150, 80, 0.3); }
+        }
+
+        .boss-dialogue {
+            background: rgba(60, 50, 40, 0.5);
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            padding: 15px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: rgba(200, 170, 100, 0.8);
+            max-width: 450px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .boss-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+
+        .judgment-actions {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: flex-start;
+        }
+
+        .judgment-option {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(100, 80, 50, 0.5), rgba(60, 50, 40, 0.6));
+            border: 1px solid rgba(200, 150, 80, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 80px;
+        }
+
+        .judgment-option:hover {
+            background: rgba(80, 60, 40, 0.7);
+            border-color: rgba(200, 150, 80, 0.6);
+            box-shadow: 0 0 20px rgba(200, 150, 80, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .judgment-option-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 8px;
+        }
+
+        .judgment-option-desc {
+            font-size: 11px;
+            color: rgba(200, 170, 100, 0.6);
+            line-height: 1.4;
+        }
+
+        /* ==================== 阶段5 - 结算 ==================== */
+        
+        #resultStage {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(40, 30, 20, 0.5), rgba(60, 40, 30, 0.4));
+            border: 2px solid rgba(200, 150, 80, 0.3);
+            border-radius: 4px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .result-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .result-title.victory {
+            color: var(--success-green);
+            text-shadow: 0 0 20px rgba(74, 157, 131, 0.4);
+        }
+
+        .result-title.defeat {
+            color: var(--accent-red);
+            text-shadow: 0 0 20px rgba(214, 40, 40, 0.4);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(200, 150, 80, 0.1);
+            font-size: 13px;
+            color: rgba(200, 170, 100, 0.8);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: var(--primary-gold);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .result-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(100, 80, 50, 0.6), rgba(60, 50, 40, 0.8));
+            border: 1px solid rgba(200, 150, 80, 0.4);
+            color: rgba(200, 150, 80, 0.8);
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .result-btn:hover {
+            color: var(--primary-gold);
+            border-color: rgba(200, 150, 80, 0.7);
+            background: rgba(80, 60, 40, 0.6);
+            box-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+        }
+
+        /* ==================== 动画 ==================== */
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .float-up {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            #judgmentStage, #actionStage {
+                flex-direction: column;
+            }
+
+            .game-container {
+                flex-direction: column;
+            }
+
+            .game-main {
+                flex: 1;
+            }
+
+            .game-sidebar {
+                flex: none;
+                max-height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hotspot-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dungeon-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .craft-left, .craft-right {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 大地图屏幕 ==================== -->
+    <div id="mapScreen" class="screen active">
+        <div class="map-bg">
+            <div class="map-void"></div>
+        </div>
+        <div class="map-content">
+            <h1 class="map-title">偃师枢纽</h1>
+            <div class="dungeon-grid" id="dungeonGrid"></div>
+        </div>
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">修复进度</span>
+                <span class="status-value" id="globalProgress">0%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">章节完成</span>
+                <span class="status-value" id="chaptersCompleted">0/4</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">总游戏时长</span>
+                <span class="status-value" id="playTime">0 分钟</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 游戏屏幕 ==================== -->
+    <div id="gameScreen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="gameTitle">敦煌·飞天迷廊</div>
+            <button class="game-exit-btn" onclick="game.exitDungeon()">← 返回枢纽</button>
+        </div>
+
+        <div class="game-container">
+            <div class="game-main">
+                <!-- 阶段内容动态加载区域 -->
+                <div class="scene-display" id="sceneDisplay">
+                    <div class="scene-bg"></div>
+                    <div class="scene-content" id="stageContent"></div>
+                </div>
+            </div>
+
+            <div class="game-sidebar">
+                <!-- 属性面板 -->
+                <div class="panel">
+                    <div class="panel-title">偶人状态</div>
+                    <div class="stat-bar">
+                        <div class="stat-label">
+                            <span>清醒度</span>
+                            <span id="awarenessValue">100</span>
+                        </div>
+                        <div class="stat-fill">
+                            <div class="stat-value" id="awarenessFill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-label">
+                            <span>俗染</span>
+                            <span id="mundaneValue">0</span>
+                        </div>
+                        <div class="stat-fill">
+                            <div class="stat-value warning" id="mundaneFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-label">
+                            <span>妄饰</span>
+                            <span id="deceptionValue">0</span>
+                        </div>
+                        <div class="stat-fill">
+                            <div class="stat-value warning" id="deceptionFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 证据面板 -->
+                <div class="panel">
+                    <div class="panel-title">已收集证据</div>
+                    <div class="card-list" id="evidenceList"></div>
+                </div>
+
+                <!-- 卡牌面板 -->
+                <div class="panel">
+                    <div class="panel-title">已铸造卡牌</div>
+                    <div class="card-list" id="cardList"></div>
+                </div>
+
+                <!-- 立场面板 -->
+                <div class="panel">
+                    <div class="panel-title">本局立场</div>
+                    <div style="font-size: 12px; color: rgba(200, 170, 100, 0.8); line-height: 1.6;">
+                        <div id="stanceDisplay">尚未形成</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 游戏核心系统 ====================
+
+        const gameData = {
+            // 副本数据库
+            dungeons: [
+                {
+                    id: 'dungeon_1',
+                    name: '敦煌·飞天迷廊',
+                    chapter: 1,
+                    description: '被"唯美至上"审美逻辑扭曲的敦煌数字幻境',
+                    boss: '妙音天监',
+                    locked: false,
+                    completedCount: 0,
+                    icon: '🏜️'
+                },
+                {
+                    id: 'dungeon_2',
+                    name: '大秦·错金机械冢',
+                    chapter: 2,
+                    description: '法度至上、拒绝人性的秦陵矩阵',
+                    boss: '秦律执行官',
+                    locked: true,
+                    completedCount: 0,
+                    icon: '⚔️'
+                },
+                {
+                    id: 'dungeon_3',
+                    name: '大唐·迷幻香道界',
+                    chapter: 3,
+                    description: '将情感蒸馏成仪式的香道禁地',
+                    boss: '香主观想',
+                    locked: true,
+                    completedCount: 0,
+                    icon: '🌸'
+                },
+                {
+                    id: 'dungeon_4',
+                    name: '皮影·永恒舞台',
+                    chapter: 4,
+                    description: '众生永远被观看、被操纵的影戏世界',
+                    boss: '影子之王',
+                    locked: true,
+                    completedCount: 0,
+                    icon: '🎭'
+                }
+            ],
+
+            // 探察点数据
+            hotspots: {
+                dungeon_1: [
+                    { name: '飞天壁画', icon: '🎨', fragment: '飞天·飘带势', cost: { deception: 1 }, chance: 0 },
+                    { name: '供养人题记', icon: '🙏', fragment: '供养人·俗世愿', cost: { mundane: 1 }, chance: 0 },
+                    { name: '旧经卷残页', icon: '📜', fragment: '经变·渡世义', cost: {}, chance: 0 },
+                    { name: '藻井穹顶', icon: '🔷', fragment: '藻井·观想结构', cost: { awareness: 5 }, chance: 0 },
+                    { name: '矿彩颜料盘', icon: '🎭', fragment: '石青石绿·矿彩认知', cost: {}, chance: 0 },
+                    { name: '伎乐天琵琶', icon: '🎵', fragment: '妙音·反拨节律', cost: { awareness: 5 }, chance: 0 }
+                ]
+            },
+
+            // 推荐配方
+            recipes: {
+                dungeon_1: [
+                    {
+                        name: '人间亦可入画',
+                        ingredients: ['供养人·俗世愿', '经变·渡世义'],
+                        effect: '审判时大幅削减"俗染"，解锁"人间性"论点',
+                        rarity: 'common'
+                    },
+                    {
+                        name: '悲欣同卷',
+                        ingredients: ['泪痕·人心证', '供养人·俗世愿'],
+                        effect: '获得强力心证，可触发隐藏对话',
+                        rarity: 'rare'
+                    },
+                    {
+                        name: '飞天拟态',
+                        ingredients: ['飞天·飘带势', '伎乐·伪相'],
+                        effect: '本回合免除一次盘查',
+                        rarity: 'common'
+                    }
+                ]
+            },
+
+            // 事件池
+            events: {
+                dungeon_1: [
+                    {
+                        id: 1,
+                        title: '飞天巡舞盘查',
+                        description: '飞天沿壁巡舞，要求所有入境者节奏一致。你该如何应对？',
+                        choices: [
+                            { text: '【飞天拟态】伪装飘逸姿态', effect: { deception: 1, evidence: '旧层笔迹' }, turnNext: true },
+                            { text: '【观壁静心】吃清醒压力，获得经证', effect: { awareness: -5, evidence: '妙音回执' }, turnNext: true },
+                            { text: '【强行穿行】高风险通过', effect: { evidence: '秘境入证', risk: '可能被识破' }, turnNext: true }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: '妙音幻乐诱导',
+                        description: '无形的乐声试图消融你的意识，清醒在流失。',
+                        choices: [
+                            { text: '【定心回响】恢复清醒与辩论增益', effect: { awareness: 15, evidence: '妙音回执' }, turnNext: true },
+                            { text: '【沉浸其间】高风险获得隐藏心证', effect: { evidence: '心音之证', awareness: -20, risk: '清醒大幅下降' }, turnNext: true }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: '供养人壁前的愿望回声',
+                        description: '壁画中的供养人似乎在低语千年的祈愿，你听见了什么？',
+                        choices: [
+                            { text: '【人间亦可入画】触发人间性论点', effect: { mundane: -1, evidence: '人间亦美', stance: 'empathy' }, turnNext: true },
+                            { text: '【修复观察】记录失真痕迹', effect: { evidence: '修复指纹', stance: 'restoration' }, turnNext: true }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // 游戏状态管理
+        const game = {
+            currentDungeon: null,
+            currentStage: 0, // 0=探察, 1=铸卡, 2=行动, 3=审判, 4=结算
+            currentTurn: 0,
+            selectedHotspots: [],
+            fragments: {},
+            cards: [],
+            evidence: [],
+            stats: {
+                awareness: 100,
+                mundane: 0,
+                deception: 0,
+                defacement: 0
+            },
+            stance: 'neutral',
+            startTime: 0,
+            globalStats: {
+                totalRepairProgress: 0,
+                chaptersCompleted: 0,
+                totalPlayTime: 0
+            },
+
+            initGame() {
+                this.loadGlobalStats();
+                this.renderDungeonMap();
+            },
+
+            loadGlobalStats() {
+                const saved = localStorage.getItem('gameGlobalStats');
+                if (saved) {
+                    this.globalStats = JSON.parse(saved);
+                }
+                this.updateGlobalUI();
+            },
+
+            saveGlobalStats() {
+                localStorage.setItem('gameGlobalStats', JSON.stringify(this.globalStats));
+            },
+
+            updateGlobalUI() {
+                document.getElementById('globalProgress').textContent = this.globalStats.totalRepairProgress + '%';
+                document.getElementById('chaptersCompleted').textContent = this.globalStats.chaptersCompleted + '/4';
+                document.getElementById('playTime').textContent = Math.floor(this.globalStats.totalPlayTime / 60) + ' 分钟';
+            },
+
+            renderDungeonMap() {
+                const grid = document.getElementById('dungeonGrid');
+                grid.innerHTML = '';
+
+                gameData.dungeons.forEach(dungeon => {
+                    const card = document.createElement('div');
+                    card.className = `dungeon-card ${dungeon.locked ? 'locked' : ''}`;
+                    card.innerHTML = `
+                        <div>
+                            <h3>${dungeon.icon} ${dungeon.name}</h3>
+                            <p>${dungeon.description}</p>
+                        </div>
+                        <div class="dungeon-difficulty">
+                            <button class="difficulty-btn ${dungeon.locked ? 'locked' : ''}" 
+                                onclick="game.startDungeon('${dungeon.id}', 'normal')" 
+                                ${dungeon.locked ? 'disabled' : ''}>普通</button>
+                            <button class="difficulty-btn ${dungeon.locked ? 'locked' : ''}" 
+                                onclick="game.startDungeon('${dungeon.id}', 'hard')" 
+                                ${dungeon.locked ? 'disabled' : ''}>困难</button>
+                            <button class="difficulty-btn ${dungeon.locked ? 'locked' : ''}" 
+                                onclick="game.startDungeon('${dungeon.id}', 'nightmare')" 
+                                ${dungeon.locked ? 'disabled' : ''}>灾厄</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            },
+
+            startDungeon(dungeonId, difficulty) {
+                this.currentDungeon = gameData.dungeons.find(d => d.id === dungeonId);
+                this.currentStage = 0;
+                this.currentTurn = 0;
+                this.selectedHotspots = [];
+                this.fragments = {};
+                this.cards = [];
+                this.evidence = [];
+                this.stats = {
+                    awareness: 100,
+                    mundane: 0,
+                    deception: 0,
+                    defacement: 0
+                };
+                this.stance = 'neutral';
+                this.startTime = Date.now();
+
+                // 切换屏幕
+                document.getElementById('mapScreen').classList.remove('active');
+                document.getElementById('gameScreen').classList.add('active');
+
+                document.getElementById('gameTitle').textContent = this.currentDungeon.name;
+
+                this.loadStage();
+            },
+
+            loadStage() {
+                switch (this.currentStage) {
+                    case 0:
+                        this.renderExploreStage();
+                        break;
+                    case 1:
+                        this.renderCraftStage();
+                        break;
+                    case 2:
+                        this.renderActionStage();
+                        break;
+                    case 3:
+                        this.renderJudgmentStage();
+                        break;
+                    case 4:
+                        this.renderResultStage();
+                        break;
+                }
+                this.updateSidebar();
+            },
+
+            renderExploreStage() {
+                const content = document.getElementById('stageContent');
+                const hotspots = gameData.hotspots[this.currentDungeon.id] || [];
+
+                let html = `
+                    <div class="explore-title">探察·寻找证据</div>
+                    <div class="explore-counter">
+                        已选择 <span class="counter-active" id="hotspotCount">0</span> / 4 个交互点
+                    </div>
+                    <div class="hotspot-grid">
+                `;
+
+                hotspots.forEach((spot, idx) => {
+                    const isSelected = this.selectedHotspots.includes(idx);
+                    html += `
+                        <div class="hotspot ${isSelected ? 'selected' : ''} ${this.selectedHotspots.length >= 4 && !isSelected ? 'disabled' : ''}"
+                             onclick="game.toggleHotspot(${idx})"
+                             title="${spot.name}">
+                            <div class="hotspot-content">
+                                <div class="hotspot-icon">${spot.icon}</div>
+                                <div class="hotspot-name">${spot.name}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="game.proceedToNext()">确认选择 → 铸卡</button>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            },
+
+            toggleHotspot(idx) {
+                if (this.selectedHotspots.includes(idx)) {
+                    this.selectedHotspots = this.selectedHotspots.filter(i => i !== idx);
+                } else if (this.selectedHotspots.length < 4) {
+                    this.selectedHotspots.push(idx);
+                }
+
+                document.getElementById('hotspotCount').textContent = this.selectedHotspots.length;
+                this.renderExploreStage();
+            },
+
+            renderCraftStage() {
+                const content = document.getElementById('stageContent');
+                const hotspots = gameData.hotspots[this.currentDungeon.id] || [];
+
+                // 收集选中的碎片
+                this.selectedHotspots.forEach(idx => {
+                    const spot = hotspots[idx];
+                    this.fragments[spot.fragment] = (this.fragments[spot.fragment] || 0) + 1;
+                });
+
+                const recipes = gameData.recipes[this.currentDungeon.id] || [];
+
+                let html = `
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div style="flex: 1;">
+                            <div class="fragment-section">
+                                <div class="fragment-title">收集的碎片</div>
+                                <div class="fragment-pool">
+                `;
+
+                Object.entries(this.fragments).forEach(([name, count]) => {
+                    html += `<div class="fragment" draggable="true" ondragstart="game.dragFragment(event, '${name}')">${name} x${count}</div>`;
+                });
+
+                html += `
+                                </div>
+                            </div>
+                            <div class="fragment-section">
+                                <div class="fragment-title">推荐配方</div>
+                `;
+
+                recipes.forEach((recipe, idx) => {
+                    html += `
+                        <div class="card-recipe" onclick="game.useRecipe(${idx})">
+                            <div class="recipe-name">【${recipe.name}】</div>
+                            <div class="recipe-effect">${recipe.effect}</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="fragment-section">
+                                <div class="fragment-title">铸卡槽位</div>
+                                <div class="craft-slots">
+                `;
+
+                for (let i = 0; i < 2; i++) {
+                    html += `
+                        <div class="craft-slot" id="slot-${i}" ondrop="game.dropInSlot(event, ${i})" ondragover="event.preventDefault()">
+                            ${this.cards[i] ? `<div class="card-name">${this.cards[i]}</div>` : '拖拽碎片或点击配方'}
+                        </div>
+                    `;
+                }
+
+                html += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button class="action-btn" onclick="game.proceedToNext()">确认卡牌 → 行动</button>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            },
+
+            dragFragment(event, name) {
+                event.dataTransfer.setData('fragment', name);
+            },
+
+            dropInSlot(event, slotIdx) {
+                event.preventDefault();
+                const fragment = event.dataTransfer.getData('fragment');
+                this.cards[slotIdx] = fragment;
+                this.renderCraftStage();
+            },
+
+            useRecipe(recipeIdx) {
+                const recipes = gameData.recipes[this.currentDungeon.id] || [];
+                const recipe = recipes[recipeIdx];
+                if (this.cards.length < 2) {
+                    this.cards.push(recipe.name);
+                    this.renderCraftStage();
+                }
+            },
+
+            renderActionStage() {
+                const content = document.getElementById('stageContent');
+                const events = gameData.events[this.currentDungeon.id] || [];
+
+                if (this.currentTurn >= 3) {
+                    this.currentStage = 3;
+                    this.loadStage();
+                    return;
+                }
+
+                const event = events[this.currentTurn];
+
+                let html = `
+                    <div class="turn-counter">
+                        回合 <span class="turn-indicator">${this.currentTurn + 1}/3</span>
+                    </div>
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-description">${event.description}</div>
+                    <div class="event-choices">
+                `;
+
+                event.choices.forEach((choice, idx) => {
+                    html += `
+                        <button class="choice-btn" onclick="game.chooseAction(${idx})">
+                            ${choice.text}
+                            <div class="choice-effect">${this.formatEffect(choice.effect)}</div>
+                        </button>
+                    `;
+                });
+
+                html += `
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            },
+
+            formatEffect(effect) {
+                let parts = [];
+                if (effect.awareness) parts.push(`清醒 ${effect.awareness > 0 ? '+' : ''}${effect.awareness}`);
+                if (effect.mundane) parts.push(`俗染 ${effect.mundane > 0 ? '+' : ''}${effect.mundane}`);
+                if (effect.deception) parts.push(`妄饰 ${effect.deception > 0 ? '+' : ''}${effect.deception}`);
+                if (effect.evidence) parts.push(`获得证据: ${effect.evidence}`);
+                return parts.join(' | ');
+            },
+
+            chooseAction(choiceIdx) {
+                const events = gameData.events[this.currentDungeon.id] || [];
+                const event = events[this.currentTurn];
+                const choice = event.choices[choiceIdx];
+
+                // 应用效果
+                if (choice.effect.awareness) {
+                    this.stats.awareness = Math.max(0, this.stats.awareness + choice.effect.awareness);
+                }
+                if (choice.effect.mundane) {
+                    this.stats.mundane = Math.max(0, this.stats.mundane + choice.effect.mundane);
+                }
+                if (choice.effect.deception) {
+                    this.stats.deception = Math.max(0, this.stats.deception + choice.effect.deception);
+                }
+                if (choice.effect.evidence) {
+                    this.evidence.push(choice.effect.evidence);
+                }
+                if (choice.effect.stance) {
+                    this.stance = choice.effect.stance;
+                }
+
+                this.currentTurn++;
+                this.renderActionStage();
+            },
+
+            renderJudgmentStage() {
+                const content = document.getElementById('stageContent');
+
+                let html = `
+                    <div style="display: flex; gap: 30px; width: 100%; height: 100%;">
+                        <div class="boss-display">
+                            <div class="boss-avatar">🎭</div>
+                            <div class="boss-name">${this.currentDungeon.boss}</div>
+                            <div class="boss-dialogue" id="bossDialogue">
+                                "汝入此画，带来浊扰。今当自证。"
+                            </div>
+                        </div>
+                        <div class="judgment-actions">
+                            <div class="judgment-option" onclick="game.chooseJudgment('evidence')">
+                                <div class="judgment-option-title">出示证据</div>
+                                <div class="judgment-option-desc">用物证与心证反驳指控</div>
+                            </div>
+                            <div class="judgment-option" onclick="game.chooseJudgment('argue')">
+                                <div class="judgment-option-title">辩论</div>
+                                <div class="judgment-option-desc">以逻辑与经证纠偏观点</div>
+                            </div>
+                            <div class="judgment-option" onclick="game.chooseJudgment('confess')">
+                                <div class="judgment-option-title">直陈</div>
+                                <div class="judgment-option-desc">以人间性刺破偏执</div>
+                            </div>
+                            <div class="judgment-option" onclick="game.chooseJudgment('submit')">
+                                <div class="judgment-option-title">顺从</div>
+                                <div class="judgment-option-desc">低风险脱身</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            },
+
+            chooseJudgment(type) {
+                let result = this.calculateJudgmentResult(type);
+                this.currentStage = 4;
+                this.judgmentResult = result;
+                this.loadStage();
+            },
+
+            calculateJudgmentResult(type) {
+                const totalDefacement = this.stats.mundane + this.stats.deception;
+                const baseSuccess = totalDefacement <= 2 && this.stats.awareness >= 50;
+
+                let result = {
+                    type: type,
+                    success: false,
+                    repairDegree: 0,
+                    message: ''
+                };
+
+                switch (type) {
+                    case 'evidence':
+                        result.success = baseSuccess && this.evidence.length >= 2;
+                        result.repairDegree = result.success ? 20 : 5;
+                        result.message = result.success ? 
+                            '妙音天监接受了你的证据，开始重新计算其目标函数...' :
+                            '妙音天监对你的证据表示怀疑。';
+                        break;
+                    case 'argue':
+                        result.success = baseSuccess && this.evidence.length >= 1;
+                        result.repairDegree = result.success ? 25 : 8;
+                        result.message = result.success ?
+                            '你的论点打破了某些代码的循环执行...' :
+                            '逻辑碰撞，但未能突破祖灵的防护墙。';
+                        break;
+                    case 'confess':
+                        result.success = this.stance === 'empathy' && this.evidence.length >= 2;
+                        result.repairDegree = result.success ? 30 : 10;
+                        result.message = result.success ?
+                            '【隐藏真结局】妙相为渡世，不为困世。此阵，当止。' :
+                            '直陈触发，但力度不足。';
+                        break;
+                    case 'submit':
+                        result.success = true;
+                        result.repairDegree = 3;
+                        result.message = '你选择了妥协。祖灵允许你离开。';
+                        break;
+                }
+
+                return result;
+            },
+
+            renderResultStage() {
+                const content = document.getElementById('stageContent');
+                const result = this.judgmentResult;
+
+                // 更新全局进度
+                this.globalStats.totalRepairProgress = Math.min(100, this.globalStats.totalRepairProgress + result.repairDegree);
+                if (result.repairDegree >= 20) {
+                    this.globalStats.chaptersCompleted = Math.min(4, this.globalStats.chaptersCompleted + 0.25);
+                }
+
+                const playedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+                this.globalStats.totalPlayTime += playedSeconds;
+                this.saveGlobalStats();
+
+                let html = `
+                    <div class="result-card">
+                        <div class="result-title ${result.success ? 'victory' : 'defeat'}">
+                            ${result.success ? '✓ 审判通过' : '✗ 审判未通过'}
+                        </div>
+                        <div style="text-align: center; margin-bottom: 30px; color: rgba(200, 170, 100, 0.8);">
+                            ${result.message}
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">修复度提升</span>
+                            <span class="result-value">+${result.repairDegree}%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">收集证据</span>
+                            <span class="result-value">${this.evidence.length} 份</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">铸造卡牌</span>
+                            <span class="result-value">${this.cards.length} 张</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">最终清醒度</span>
+                            <span class="result-value">${this.stats.awareness} / 100</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">本局立场</span>
+                            <span class="result-value">${this.getStanceDisplay()}</span>
+                        </div>
+                        <div class="result-actions">
+                            <button class="result-btn" onclick="game.exitDungeon()">← 返回枢纽</button>
+                            <button class="result-btn" onclick="game.startDungeon('${this.currentDungeon.id}', 'normal')">重开轮回</button>
+                        </div>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            },
+
+            getStanceDisplay() {
+                const stances = {
+                    'empathy': '共情修复者',
+                    'restoration': '历史修复者',
+                    'evasion': '风险穿越者',
+                    'clarity': '清明见证者',
+                    'neutral': '未定向'
+                };
+                return stances[this.stance] || '未知';
+            },
+
+            proceedToNext() {
+                if (this.currentStage < 3) {
+                    this.currentStage++;
+                    this.loadStage();
+                }
+            },
+
+            updateSidebar() {
+                // 更新属性
+                document.getElementById('awarenessValue').textContent = this.stats.awareness;
+                document.getElementById('awarenessFill').style.width = (this.stats.awareness) + '%';
+                
+                document.getElementById('mundaneValue').textContent = this.stats.mundane;
+                document.getElementById('mundaneFill').style.width = Math.min(this.stats.mundane * 20, 100) + '%';
+                
+                document.getElementById('deceptionValue').textContent = this.stats.deception;
+                document.getElementById('deceptionFill').style.width = Math.min(this.stats.deception * 20, 100) + '%';
+
+                // 更新证据
+                const evidenceList = document.getElementById('evidenceList');
+                evidenceList.innerHTML = '';
+                this.evidence.forEach(ev => {
+                    const item = document.createElement('div');
+                    item.className = 'card-item';
+                    item.innerHTML = `<span class="card-name">${ev}</span><span class="card-count">已有</span>`;
+                    evidenceList.appendChild(item);
+                });
+
+                // 更新卡牌
+                const cardList = document.getElementById('cardList');
+                cardList.innerHTML = '';
+                this.cards.forEach(card => {
+                    const item = document.createElement('div');
+                    item.className = 'card-item';
+                    item.innerHTML = `<span class="card-name">${card}</span>`;
+                    cardList.appendChild(item);
+                });
+
+                // 更新立场
+                document.getElementById('stanceDisplay').textContent = this.getStanceDisplay();
+            },
+
+            exitDungeon() {
+                document.getElementById('gameScreen').classList.remove('active');
+                document.getElementById('mapScreen').classList.add('active');
+                this.updateGlobalUI();
+                this.renderDungeonMap();
+            }
+        };
+
+        // 初始化游戏
+        window.addEventListener('DOMContentLoaded', () => {
+            game.initGame();
+        });
+    </script>
+
+</body>
+</html>
